@@ -39,7 +39,7 @@ router.get('/', passport.authenticate('jwt', {session: false}), (req, res) => {
 // @desc   create or edit user profile
 // @access private
 router.post('/', passport.authenticate('jwt', {session: false}), (req, res) => {
-    
+    console.log(req.user.id);
     //destructuring validationprofileinput
     const {errors, isValid} = validateprofileinput(req.body);
     
@@ -73,11 +73,11 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res) => {
     if(req.body.linkedin) profileFields.social.linkedin = req.body.linkedin;
 
     //check profile 
-    Profile.findOne({ user: req.body.user })
+    Profile.findOne({ user: req.user._id })
         .then( profile => {
             if(profile){
                 //update data
-                Profile.findOneAndUpdate( {user: req.body.user} , {$set: profileFields}, {new: true} )
+                Profile.findOneAndUpdate( {user: req.user.id} , {$set: profileFields}, {new: true} )
                     .then( profile => res.json(profile));
             }else{
                 //save new profile
