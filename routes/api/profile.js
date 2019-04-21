@@ -24,8 +24,6 @@ router.get('/test', (req, res) => res.json({ msg: "It's Works " }));
 
 
 
-
-
 // @route  GET api/profile
 // @desc   Get current users profile
 // @access private
@@ -43,11 +41,6 @@ router.get('/', passport.authenticate('jwt', {session: false}), (req, res) => {
         })
         .catch(err => res.status(400).json(errors));
 });
-
-
-
-
-
 
 
 
@@ -117,12 +110,6 @@ router.get('/all', (req, res) => {
         })
         .catch(err => res.status(404).json({profile: 'there is no profile for this user'}))
 });
-
-
-
-
-
-
 
 
 
@@ -250,19 +237,84 @@ router.post('/education', passport.authenticate('jwt', {session: false}), (req, 
 });
 
 
+
+
+
+
 // @route  DELETE api/profile/experience/:exp_id
 // @desc   delete experience from profile
 // @access private
 router.delete('/experience/:exp_id', passport.authenticate('jwt', {session: false}) , (req, res) => {
-    // const errors = {};
-    // Profile.findOne({ user: req.user.id })
-    //     .then(profile => {
-    //         if(!profile) {
-    //             errors.experience = 'No Experience';
-    //             return res.status(404).json(errors);
-    //         }
-    //     })
-})
+    const errors = {};
+    Profile.findOne({ user: req.user.id })
+       .then(profile => {
+            
+            const filterExperience = profile.experience.filter(item => {
+                return item.id === req.params.exp_id;
+            })
+
+            if(filterExperience.length === 0){
+                errors.experience = 'No experience related data';
+                return res.status(404).json(errors);
+            }
+            const removeIndex = profile.experience
+                .map(item => item.id)
+                .indexOf(req.params.exp_id)
+
+                //splice
+                profile.experience.splice(removeIndex, 1);
+
+                //save
+                profile.save().then(profile => res.json(profile) );   
+       })
+       .catch(err => res.status(404).json(err));
+});
+
+
+
+
+//@route DELETE api/profile/education/:edu_id
+//@desc  Delete education from profile
+//@access private
+router.delete('/education/:edu_id', passport.authenticate('jwt', {session: false}), (req, res) => {
+
+    const errors = {};
+    Profile.findOne({ user: req.user.id })
+        .then(profile => {
+
+            const filterEducation = profile.education.filter(item => {
+                return item.id === req.params.edu_id;
+            })
+
+            if(filterEducation.length === 0){
+                errors.education = 'No education related data';
+                return res.status(404).json(errors)
+            }
+
+            const removeIndex = profile.education
+                .map(item => item.id)
+                .indexOf(req.params.edu_id)
+
+                //splice
+                profile.education.splice(removeIndex, 1);
+                profile.save().then(profile => res.json(profile));
+
+        })
+        .catch(err => res.status(404).json(err));
+});
+
+
+
+//@route DELETE api/profile
+//@desc  delete profile and user
+//@access private
+router.delete('/', passport.authenticate('jwt', {session: false}), (req, res) => {
+    Profile.findOneAndRemove({ user: req.user.id }).then(() => {
+            User.findOneAndRemove({ _id: req.user.id} ).then( () => {
+                res.json({ success: true });
+            });
+        });
+});
 
 
 
