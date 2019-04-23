@@ -1,0 +1,25 @@
+#install create react app on folder client 
+
+    - create-react-app client
+    - added proxy to package.json on client , example http://localhost:5000
+
+    - install concurrently to run both server on client and API server , npm i concurrently
+    - edit your package.json on server API 
+
+    BEFORE CHANGE: 
+    -----------------------------------------------------------------------
+         "scripts": {
+                "start": "node server.js",
+                "server": "nodemon server.js"
+          }
+    -----------------------------------------------------------------------
+    AFTER CHANGE:
+    -----------------------------------------------------------------------
+        "scripts": {
+            "client-install": "npm install --prefix client",
+            "start": "node server.js",
+            "server": "nodemon server.js",
+            "client": "npm start --prefix client",
+            "dev": "concurrently \"npm run server\" \"npm run client\""
+        }
+    -----------------------------------------------------------------------
