@@ -9,9 +9,20 @@ import Navbar from './components/layout/Navbar';
 import Landing from './components/layout/Landing';
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';
+import setAuthToken from './utils/setAuthToken';
+import jwt_decode from 'jwt-decode';
+import { setCurrentUser } from './actions/authActions';
+//check token
+if(localStorage.jwtToken){
+  //set auth token
+  setAuthToken(localStorage.jwtToken);
 
+  //decode token
+  const decode = jwt_decode(localStorage.jwtToken)
 
-
+  //set current user
+  store.dispatch(setCurrentUser(decode));
+}
 
 function App() {
   return (
