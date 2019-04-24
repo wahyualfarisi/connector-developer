@@ -64,6 +64,7 @@ class Login extends Component {
                 <TextFieldGroup
                   placeholder="Email Address"
                   name="email"
+                  type="email"
                   value={this.state.email}
                   onChange={this.onChange}
                   error={errors.email}
@@ -72,6 +73,7 @@ class Login extends Component {
                 <TextFieldGroup
                   placeholder="Enter Password"
                   name="password"
+                  type="password"
                   value={this.state.password}
                   onChange={this.onChange}
                   error={errors.password}
