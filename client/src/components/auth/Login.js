@@ -26,6 +26,11 @@ class Login extends Component {
 
   componentDidMount() {
     document.all[9].textContent = "Login | DevConnector";
+
+    if(this.props.auth.isAuthenticated){
+      this.props.history.push('/dashboard');
+    }
+
   }
 
   onChange = (e) => {

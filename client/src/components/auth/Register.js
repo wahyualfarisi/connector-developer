@@ -27,6 +27,10 @@ class Register extends Component {
 
   componentDidMount() {
     document.all[9].textContent = "Register | DevConnector";
+
+    if(this.props.auth.isAuthenticated){
+      this.props.history.push('/dashboard');
+    }
   }
 
   changeValue(e) {
