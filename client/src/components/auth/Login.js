@@ -1,57 +1,54 @@
 import React, { Component } from "react";
-import classnames from 'classnames'
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { loginUser } from '../../actions/authActions';
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { loginUser } from "../../actions/authActions";
+import TextFieldGroup from "../common/TextFieldGroup";
 class Login extends Component {
   constructor() {
     super();
     this.state = {
-        email: '',
-        password: '',
-        errors: {}
-    }
+      email: "",
+      password: "",
+      errors: {}
+    };
   }
 
-  componentWillReceiveProps = (nextProps) => {
-    if(nextProps.auth.isAuthenticated){
-      this.props.history.push('/dashboard');
+  componentWillReceiveProps = nextProps => {
+    if (nextProps.auth.isAuthenticated) {
+      this.props.history.push("/dashboard");
     }
 
-    if(nextProps.errors){
-      this.setState({ errors: nextProps.errors })
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
     }
-
-  }
+  };
 
   componentDidMount() {
     document.all[9].textContent = "Login | DevConnector";
 
-    if(this.props.auth.isAuthenticated){
-      this.props.history.push('/dashboard');
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push("/dashboard");
     }
-
   }
 
-  onChange = (e) => {
-      this.setState({
-          [e.target.name]: e.target.value
-      })
-  }
+  onChange = e => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  };
 
-  onSubmit = (e) => {
-      e.preventDefault();
+  onSubmit = e => {
+    e.preventDefault();
 
-      const newUser = {
-          email: this.state.email,
-          password: this.state.password
-      }
+    const newUser = {
+      email: this.state.email,
+      password: this.state.password
+    };
 
-      this.props.loginUser(newUser);
-  }
+    this.props.loginUser(newUser);
+  };
 
   render() {
-
     const { errors } = this.state;
 
     return (
@@ -64,33 +61,22 @@ class Login extends Component {
                 Sign in to your DevConnector account
               </p>
               <form noValidate onSubmit={this.onSubmit}>
-                <div className="form-group">
-                  <input
-                    type="email"
-                    className={classnames('form-control form-contorl-lg', {
-                      'is-invalid' : errors.email
-                    })}
-                    placeholder="Email Address"
-                    name="email"
-                    value={this.state.email}
-                    onChange={this.onChange}
-                  />
-                  {errors.email && (<div className="invalid-feedback">{errors.email}</div>) }
-                </div>
-                {errors.email && (<div className="invalid-feedback">{errors.email}</div>) }
-                <div className="form-group">
-                  <input
-                    type="password"
-                    className={classnames('form-control form-contorl-lg', {
-                      'is-invalid' : errors.password
-                    })}
-                    placeholder="Password"
-                    name="password"
-                    value={this.state.password}
-                    onChange={this.onChange}
-                  />
-                  {errors.password && (<div className="invalid-feedback">{errors.password}</div>) }
-                </div>
+                <TextFieldGroup
+                  placeholder="Email Address"
+                  name="email"
+                  value={this.state.email}
+                  onChange={this.onChange}
+                  error={errors.email}
+                />
+
+                <TextFieldGroup
+                  placeholder="Enter Password"
+                  name="password"
+                  value={this.state.password}
+                  onChange={this.onChange}
+                  error={errors.password}
+                />
+
                 <input type="submit" className="btn btn-info btn-block mt-4" />
               </form>
             </div>
@@ -110,6 +96,9 @@ Login.propTypes = {
 const mapStateToProps = state => ({
   auth: state.auth,
   errors: state.error
-})
+});
 
-export default connect(mapStateToProps, { loginUser }) (Login);
+export default connect(
+  mapStateToProps,
+  { loginUser }
+)(Login);
