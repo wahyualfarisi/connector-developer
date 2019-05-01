@@ -1,10 +1,13 @@
 import React, { Component } from "react";
+import { withRouter  } from 'react-router-dom';
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import TextFieldGroup from "./../common/TextFieldGroup";
-import TextAreaFieldGroup from "./../common/TextAreaFieldGroup";
 import InputGroup from "./../common/InputGroup";
 import SelectListGroup from "./../common/SelectListGroup";
+
+//profile actions
+import { createProfile } from '../../actions/profileActions';
 
 class CreateProfile extends Component {
   constructor(props) {
@@ -29,8 +32,35 @@ class CreateProfile extends Component {
     };
   }
 
+  componentWillReceiveProps = (nextProps) => {
+    if(nextProps.errors){
+      this.setState({ errors: nextProps.errors })
+    }
+
+  }
+
   onSubmit = e => {
     e.preventDefault();
+
+    const profileData = {
+      handle: this.state.handle,
+      company: this.state.company,
+      website: this.state.website,
+      location: this.state.location,
+      status: this.state.status,
+      skills: this.state.skills,
+      githubusername: this.state.githubusername,
+      bio: this.state.bio,
+      twitter: this.state.twitter,
+      facebook: this.state.facebook,
+      linkedin: this.state.linkedin,
+      youtube: this.state.youtube,
+      instagram: this.state.instagram
+    }
+
+    this.props.createProfile(profileData, this.props.history); 
+    // console.log(profileData);
+    
   };
 
   onChange = e => {
@@ -62,7 +92,7 @@ class CreateProfile extends Component {
           />
           <InputGroup
             placeholder="Facebook profile url"
-            name="twitter"
+            name="facebook"
             icon="fab fa-facebook"
             value={this.state.facebook}
             onChange={this.onChange}
@@ -70,7 +100,7 @@ class CreateProfile extends Component {
           />
           <InputGroup
             placeholder="Linkedin profile url"
-            name="twitter"
+            name="linkedin"
             icon="fab fa-linkedin"
             value={this.state.linkedin}
             onChange={this.onChange}
@@ -165,18 +195,11 @@ class CreateProfile extends Component {
                 />
 
                 <TextFieldGroup
-                  placeholder="Status"
-                  name="status"
-                  value={this.state.status}
-                  onChange={this.onChange}
-                  info="Add your status jobs"
-                />
-
-                <TextFieldGroup
                   placeholder="Add Your Skills"
                   name="skills"
                   value={this.state.skills}
                   onChange={this.onChange}
+                  error={errors.skills}
                   info="Add your skills Example: Javascript, html, css "
                 />
 
@@ -197,6 +220,7 @@ class CreateProfile extends Component {
 
                 <div className="mb-3">
                   <button
+                    type="button"
                     onClick={() => {
                       this.setState(prevState => ({
                         displaySocialInputs: !prevState.displaySocialInputs
@@ -234,5 +258,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  null
-)(CreateProfile);
+  { createProfile }
+)( withRouter(CreateProfile));
